@@ -9,7 +9,7 @@
     user:
       name: "{{ user_name }}"
       uid: "{{ user_id }}"
-      groups: "{{ user_group }}"
+      group: "{{ user_group }}"
     become: yes
   - name: Forward key
     authorized_key:
