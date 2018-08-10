@@ -60,9 +60,6 @@
       src: templates/jenkins.conf.j2
       dest: /etc/httpd/conf.d/jenkins.conf
     become: yes
-  - name: Edit httpd.conf
-    shell: sed -i '/^Listen 80$/d' /etc/httpd/conf/httpd.conf
-    become: yes
   - name: Start service
     service:
       name: httpd
