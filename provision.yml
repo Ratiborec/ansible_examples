@@ -1,0 +1,76 @@
+- hosts: jenkins_server 
+  vars:
+     jenkins_home: "/opt/jenkins"
+     jenkins_user: "jenkins"
+     jenkins_host: "{{ansible_host}}"
+  become: yes
+  tasks:
+  - name: Coping templates
+    template:
+      src: templates/jenkins.service.j2
+      dest: /etc/systemd/system/jenkins.service
+    become: yes
+  - name: Install java
+    yum: 
+      name: java
+      state: latest
+    become: yes
+  - name: Create group for user
+    group:
+      name: "{{jenkins_user}}"
+    become: yes
+  - name: User create
+    user:
+      name: "{{jenkins_user}}"
+      groups: "{{jenkins_user}}"
+    become: yes
+  - name: Creating Directory
+    file:
+      path: "{{jenkins_home}}"
+      state: directory
+    become: yes
+  - name: Download jenkins
+    get_url:
+      url: http://mirrors.jenkins.io/war-stable/latest/jenkins.war
+      dest: '{{jenkins_home}}/jenkins.war'
+    become: yes
+  - name: Starting service
+    systemd:
+      name: jenkins
+      state: started
+      enabled: yes
+  - name: Wait for starting Jenkins
+    wait_for:
+      port: 8080
+      host: "{{ansible_host}}"
+      delay: 5
+
+- hosts: webservers
+  vars:
+    jenkins_ip: '192.168.1.102'
+    jenkins_port: '8080'    
+  tasks:
+  - name: Install httpd
+    yum:
+      name: httpd
+      state: latest
+    become: yes
+  - name: Add virtual host
+    template: 
+      src: templates/jenkins.conf.j2
+      dest: /etc/httpd/conf.d/jenkins.conf
+    become: yes
+  - name: Edit httpd.conf
+    shell: sed -i '/^Listen 80$/d' /etc/httpd/conf/httpd.conf
+    become: yes
+  - name: Start service
+    service:
+      name: httpd
+      state: started
+      enabled: yes
+    become: yes
+  - name: Check state
+    wait_for:
+      port: 80
+      host: "{{ansible_host}}"
+

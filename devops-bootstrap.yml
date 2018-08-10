@@ -1,0 +1,24 @@
+- hosts: all
+  tasks:
+  - name: Create_group
+    group:
+      name: "{{ user_group }}"
+      gid: "{{ group_id }}"
+    become: yes
+  - name: Create user
+    user:
+      name: "{{ user_name }}"
+      uid: "{{ user_id }}"
+      groups: "{{ user_group }}"
+    become: yes
+  - name: Forward key
+    authorized_key:
+      user: "{{ user_name }}"
+      key: "{{ lookup('file', '/home/vagrant/ansible/day1/id_rsa.pub') }}"
+      path: '/home/{{ user_name }}/.ssh/authorized_keys'
+      manage_dir: False
+    become: yes
+  - lineinfile:
+      path: '/etc/sudoers'
+      line: '{{ user_name }} ALL=(ALL) NOPASSWD: ALL'
+    become: yes

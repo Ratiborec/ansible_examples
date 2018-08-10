@@ -1,0 +1,6 @@
+Listen 80
+<VirtualHost *:80>
+    ServerName jenkins
+    ProxyPass        /  http://{{jenkins_ip}}:{{jenkins_port}}/
+</VirtualHost>
+

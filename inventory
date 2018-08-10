@@ -1,0 +1,11 @@
+[webservers]
+httpd_server ansible_connection=ssh ansible_host=192.168.1.101
+
+[appservers]
+jenkins_server ansible_connection=ssh ansible_host=192.168.1.102
+
+[all:vars]
+user_name=devops
+user_group=devops
+user_id=30100
+group_id=30110
