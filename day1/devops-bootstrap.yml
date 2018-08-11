@@ -14,7 +14,7 @@
   - name: Forward key
     authorized_key:
       user: "{{ user_name }}"
-      key: "{{ lookup('file', '/home/vagrant/ansible/day1/id_rsa.pub') }}"
+      key: "{{ lookup('file', '/home/vagrant/ansible/id_rsa.pub') }}"
       path: '/home/{{ user_name }}/.ssh/authorized_keys'
       manage_dir: False
     become: yes
