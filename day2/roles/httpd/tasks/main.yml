@@ -1,0 +1,20 @@
+- name: Install httpd
+  yum:
+    name: httpd
+    state: latest
+  become: yes
+- name: Add virtual host
+  template: 
+    src: jenkins.conf.j2
+    dest: /etc/httpd/conf.d/jenkins.conf
+  become: yes
+  notify: 
+    - "restart httpd"
+    - "check state"
+
+- name: Script facts
+  copy: 
+    src: httpd.fact
+    dest: /etc/ansible/facts.d/
+    mode: "a+x"
+  become: true

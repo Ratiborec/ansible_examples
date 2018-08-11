@@ -1,0 +1,6 @@
+- name: Clean packages after install
+  command: yum clean all
+  args:
+    warn: no
+  become: yes
+  listen: "clean packages"

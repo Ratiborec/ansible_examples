@@ -1,0 +1,17 @@
+- name: Restart/Start Jenkins
+  systemd:
+    name: jenkins
+    daemon-reload: yes
+    state: restarted
+    enabled: yes
+  become: yes
+  listen: "restart service"
+
+- name: Wait for starting Jenkins
+  wait_for:
+    port: "{{app_port}}"
+    host: "{{ansible_host}}"
+    delay: 5
+  listen: "check state"
+
+    

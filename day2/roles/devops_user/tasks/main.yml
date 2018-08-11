@@ -1,0 +1,27 @@
+- name: Create_group
+  group:
+    name: "{{ user_group }}"
+    gid: "{{ group_id }}"
+  become: yes
+- name: Create user
+  user:
+    name: "{{ user_name }}"
+    uid: "{{ user_id }}"
+    group: "{{ user_group }}"
+  become: yes
+- name: Forward key
+  authorized_key:
+    user: "{{ user_name }}"
+    key: "{{ lookup('file', '{{ key_path }}/id_rsa.pub') }}"
+    path: '/home/{{ user_name }}/.ssh/authorized_keys'
+    manage_dir: False
+  become: yes
+- template:
+    src: sudoers.j2
+    dest: /etc/sudoers.d/{{ user_name }}
+    validate: '/usr/sbin/visudo -cf %s'
+    mode: 0440
+    group: root
+    owner: root
+  become: yes
+
