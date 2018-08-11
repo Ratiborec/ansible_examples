@@ -2,17 +2,16 @@
   vars:
      jenkins_home: "/opt/jenkins"
      jenkins_user: "jenkins"
-     jenkins_host: "{{ansible_host}}"
-  become: yes
+     java_version: "java-1.8.0-openjdk"  
   tasks:
   - name: Coping templates
     template:
-      src: templates/jenkins.service.j2
+      src: jenkins.service.j2
       dest: /etc/systemd/system/jenkins.service
     become: yes
   - name: Install java
     yum: 
-      name: java
+      name: "{{java_version}}"
       state: latest
     become: yes
   - name: Create group for user
@@ -39,16 +38,18 @@
       name: jenkins
       state: started
       enabled: yes
+    become: yes
   - name: Wait for starting Jenkins
     wait_for:
-      port: 8080
+      port: "{{hostvars['jenkins_server'].app_port}}"
       host: "{{ansible_host}}"
       delay: 5
 
-- hosts: webservers
+- hosts: httpd_server 
   vars:
-    jenkins_ip: '192.168.1.102'
-    jenkins_port: '8080'    
+    jenkins_ip: "{{hostvars['jenkins_server'].ansible_host}}"
+    jenkins_port: "{{hostvars['jenkins_server'].app_port}}"
+    check_port: "{{hostvars['httpd_server'].web_port}}"
   tasks:
   - name: Install httpd
     yum:
@@ -57,7 +58,7 @@
     become: yes
   - name: Add virtual host
     template: 
-      src: templates/jenkins.conf.j2
+      src: jenkins.conf.j2
       dest: /etc/httpd/conf.d/jenkins.conf
     become: yes
   - name: Start service
@@ -68,6 +69,5 @@
     become: yes
   - name: Check state
     wait_for:
-      port: 80
+      port: "{{check_port}}"
       host: "{{ansible_host}}"
-
