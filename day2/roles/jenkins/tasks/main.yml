@@ -16,7 +16,7 @@
   become: yes
 - name: Download jenkins
   get_url:
-    url: http://mirrors.jenkins.io/war-stable/latest/jenkins.war
+    url: http://mirrors.jenkins.io/war-stable/{{install_version}}/jenkins.war
     dest: '{{jenkins_home}}/jenkins.war'
   become: yes
 - name: Coping templates
