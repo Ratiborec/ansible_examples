@@ -8,53 +8,32 @@
   local_action: stat path={{java_archive}}/java-{{java_version}}.tar.gz
   register: have_java
 
+- name: Message, tar.gz not found
+  shell: echo "Archive was not found"
+  failed_when: have_java.stat.exists == false
+  changed_when: false
+ 
 - name: Copy necessary java.tar.gz
   unarchive:
     src: java-{{java_version}}.tar.gz
     dest: "{{java_folder}}/{{java_version}}"
   become: yes
-  when: have_java.stat.exists == true
+  when: ansible_local.java.version != java_version
 
 - name: Add version to alternatives
   alternatives:
-      name: java
-      path: "{{java_folder}}/{{java_version}}/{{java_jdk_version[java_version].folder}}/bin/java"
-      link: "/usr/bin/java"
+    name: java
+    path: "{{java_folder}}/{{java_version}}/{{java_jdk_version[java_version].folder}}/bin/java"
+    link: "/usr/bin/java"
   become: yes
-  when: have_java.stat.exists == true
-
-
+  when: ansible_local.java.version != java_version
+  notify:
+    - "collect_data"
+    - "validate_java"
+    - "write_facts"
 # Need to move this task
 - name: Create Directory
   file:
     path: /etc/ansible/facts.d/
     state: directory
   become: yes
-
-- name: Write facts
-  copy:
-    src: java.fact
-    dest: /etc/ansible/facts.d/
-    mode: "a+x"
-  become: yes
-
-
-
-
-#- name: Verify Java installation
-#  shell: java -version 2>&1 | grep version | awk -F\" '{print $2;}' | cut -d"_" -f1
-#  notify: "verify java"
-#  become: yes
-#  register: java_play_version
-  
-#- name: Create Directory fo Facts
-#  file:
-#    path: /etc/ansible/facts.d/
-#    state: directory
-#  become: yes
-
-#- name: Write facts
-#  template:
-#    src: java.j2
-#    dest: /etc/ansible/facts.d/java.fact
-#  become: yes
