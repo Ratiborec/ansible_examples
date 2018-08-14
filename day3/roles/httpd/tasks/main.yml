@@ -1,0 +1,33 @@
+- name: Install httpd
+  yum:
+    name: httpd
+    state: latest
+  become: yes
+- name: Add virtual host
+  template: 
+    src: jenkins.conf.j2
+    dest: /etc/httpd/conf.d/jenkins.conf
+  become: yes
+  notify: 
+    - "restart httpd"
+    - "check state"
+- name: Collect facts
+  shell: httpd -v | grep version | awk -F\/ '{print $2;}' | cut -d " " -f1
+  register: httpd_version
+  become: true
+
+- name: Write facts
+  template: 
+    src: httpd.fact.j2
+    dest: /etc/ansible/facts.d/httpd.fact
+  become: true
+
+
+#- name: Script facts
+#  copy: 
+#    src: httpd.fact
+#    dest: /etc/ansible/facts.d/
+#    mode: "0755" 
+#  become: true
+#  become_user: root
+

@@ -1,0 +1,3 @@
+jenkins_user: jenkins
+jenkins_user_id: 13000
+jenkins_group_id: 13000

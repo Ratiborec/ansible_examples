@@ -1,0 +1,18 @@
+{
+	"name": "{{ user }}",
+        "uid": "{{ uid }}",
+        "group": "{{ group }}",
+        "gid": "{{ gid }}",
+        "groups": [
+	{% if groups_to_add is defined %}
+        {% for gr in groups_to_add %}
+          {% if not loop.last %} 
+            "{{ gr }}",
+          {% else %} 
+	    "{{ gr }}"
+          {% endif %}
+        {% endfor %}
+	{% endif %}
+        ]
+        
+}

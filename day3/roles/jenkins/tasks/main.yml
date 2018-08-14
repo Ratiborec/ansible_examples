@@ -1,0 +1,50 @@
+- name: Create group for user
+  group:
+    name: "{{jenkins_user}}"
+    gid: "{{jenkins_group_id}}"
+  become: yes
+- name: User create
+  user:
+    name: "{{jenkins_user}}"
+    uid: "{{jenkins_user_id}}"
+    group: "{{jenkins_user}}"
+  become: yes
+- name: Creating Directory
+  file:
+    path: "{{jenkins_home}}"
+    state: directory
+  become: yes
+- name: Download jenkins
+  get_url:
+    url: http://mirrors.jenkins.io/war-stable/{{install_version}}/jenkins.war
+    dest: '{{jenkins_home}}/jenkins.war'
+  become: yes
+- name: Coping templates
+  template:
+    src: jenkins.service.j2
+    dest: /etc/systemd/system/jenkins.service
+  become: yes
+  notify:
+    - "restart service"
+    - "check state"
+- name: Create facts directory
+  file:
+    path: /etc/ansible/facts.d/
+    state: directory
+  become: yes
+
+- name: Java version
+  shell: java -version 2>&1 | grep version | awk -F\" '{print $2;}' | cut -d"_" -f1
+  become: yes
+  register: jenkins_java
+
+- name: Jenkins version
+  shell: java -jar "{{jenkins_home}}"/jenkins.war --version
+  become: yes
+  register: jenkins_version
+
+- name: Write Facts
+  template:
+    src: jenkins.fact.j2
+    dest: /etc/ansible/facts.d/jenkins.fact
+  become: yes

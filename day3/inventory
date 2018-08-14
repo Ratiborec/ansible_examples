@@ -1,0 +1,9 @@
+[cluster:children]
+webservers
+appservers
+
+[webservers]
+httpd_server
+ 
+[appservers]
+jenkins_server

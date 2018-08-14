@@ -1,0 +1,4 @@
+JAVA_OPTS: ""
+jenkins_home: /opt/jenkins/
+app_port: 8080
+install_version: "latest"

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+vers=$( /usr/bin/java -version 2>&1 | grep version | awk -F\" '{print $2;}' )
+home=$( /usr/sbin/alternatives --list | grep java | awk -F\  '{print$3}' )
+cat << EOF
+{
+	"Java Version": "$vers",
+        "Java Home": "$home"
+}
+EOF
+

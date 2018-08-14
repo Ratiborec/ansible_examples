@@ -1,0 +1,60 @@
+- name: Create Directory
+  file:
+    path: "{{java_folder}}/{{ java_version }}"
+    state: directory
+  become: yes
+
+- name: Do we have necessary java.tar.gz
+  local_action: stat path={{java_archive}}/java-{{java_version}}.tar.gz
+  register: have_java
+
+- name: Copy necessary java.tar.gz
+  unarchive:
+    src: java-{{java_version}}.tar.gz
+    dest: "{{java_folder}}/{{java_version}}"
+  become: yes
+  when: have_java.stat.exists == true
+
+- name: Add version to alternatives
+  alternatives:
+      name: java
+      path: "{{java_folder}}/{{java_version}}/{{java_jdk_version[java_version].folder}}/bin/java"
+      link: "/usr/bin/java"
+  become: yes
+  when: have_java.stat.exists == true
+
+
+# Need to move this task
+- name: Create Directory
+  file:
+    path: /etc/ansible/facts.d/
+    state: directory
+  become: yes
+
+- name: Write facts
+  copy:
+    src: java.fact
+    dest: /etc/ansible/facts.d/
+    mode: "a+x"
+  become: yes
+
+
+
+
+#- name: Verify Java installation
+#  shell: java -version 2>&1 | grep version | awk -F\" '{print $2;}' | cut -d"_" -f1
+#  notify: "verify java"
+#  become: yes
+#  register: java_play_version
+  
+#- name: Create Directory fo Facts
+#  file:
+#    path: /etc/ansible/facts.d/
+#    state: directory
+#  become: yes
+
+#- name: Write facts
+#  template:
+#    src: java.j2
+#    dest: /etc/ansible/facts.d/java.fact
+#  become: yes

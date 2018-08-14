@@ -1,0 +1,56 @@
+- name: Test
+  hosts: all
+  
+  roles:
+    - common
+    - devops_user
+
+- name: Jenkins Install
+  hosts: jenkins_server
+  
+  roles:
+    - jenkins
+
+- name: HTTPD Config and Install     
+  hosts: httpd_server
+  
+  pre_tasks:
+    - name: Get state of Jenkins server
+      shell: curl -ILs "{{hostvars['jenkins_server'].ansible_host}}":"{{app_port}}" | grep "X-Jenkins:" | awk '{print $2;}'
+      register: jenkins_state
+
+    - name: Fail or not
+      fail: 
+        msg: "Jenkins is not strarted"
+      when: jenkins_state.stdout == ""
+ 
+  roles:
+    - role: httpd   
+      ip_address: "{{hostvars['jenkins_server'].ansible_host}}"
+
+  tasks:
+    - name: Count of virtual hosts
+      shell: ls -la /etc/httpd/conf.d/*.conf | grep -v '\(autoindex\|userdir\|welcome\)' | wc -l
+      register: vhost
+   
+    - name: Create directory
+      file:
+        path: /etc/ansible/facts.d/
+        state: directory
+      become: yes
+
+    - name: Write stats
+      template: 
+        src: vhost.j2
+        dest: /etc/ansible/facts.d/vhost.fact
+      become: yes        
+ 
+  post_tasks:
+    - name: Check HTTPD State and Config
+      shell: curl -ILs "{{ansible_host}}":"{{web_port}}" | grep "X-Jenkins:" | awk '{print $2;}'
+      register: httpd_state
+
+    - name: Fail or not
+      fail:
+        msg: "Jenkins is not strarted"
+      when: jenkins_state.stdout != httpd_state.stdout      

@@ -1,0 +1,11 @@
+key_path: /home/vagrant/ansible/day3/ssh/
+user: devops
+group: devops
+uid: 1100
+gid: 1100
+sudo: yes
+#groups_to_add:
+#  - users
+#  - root
+create_home: yes 
+

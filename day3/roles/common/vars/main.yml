@@ -1,0 +1,4 @@
+packages:
+- net-tools
+- nmap
+- vim

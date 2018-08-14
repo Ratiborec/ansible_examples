@@ -1,0 +1,4 @@
+- hosts: jenkins_server 
+  roles:
+    - java
+ 

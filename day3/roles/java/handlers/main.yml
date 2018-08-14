@@ -1,0 +1,7 @@
+#- name: Verify Java Installation
+  #debug:
+  #  msg: '{{java_version}} '
+#  fail:
+#    msg: "Incorrect java installation"
+#  when:  java_version != java_play_version.stdout
+#  listen: "verify java"
