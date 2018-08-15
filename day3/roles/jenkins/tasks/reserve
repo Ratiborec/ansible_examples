@@ -1,0 +1,46 @@
+- name: Java install
+  include_role:
+    name: java
+  vars:
+    java_version:  "{{java_for_jenkins[install_version]}}"
+  when: ansible_local.java is undefined or ansible_local.java.version != java_for_jenkins[install_version]
+
+- name: Create user
+  include_role:
+    name: user
+    tasks_from: create_user
+- name: Creating Directory
+  file:
+    path: "{{jenkins_home}}/{{install_version}}"
+    state: directory
+  become: yes
+
+- name: Download jenkins
+  get_url:
+    url: http://mirrors.jenkins.io/war-stable/{{install_version}}/jenkins.war
+    dest: '{{jenkins_home}}/{{install_version}}/jenkins.war'
+  become: yes
+- name: Coping templates
+  template:
+    src: jenkins.service.j2
+    dest: /etc/systemd/system/jenkins.service
+  become: yes
+  notify:
+    - "restart service"
+    - "check state"
+
+- name: Jenkins version
+  shell: java -jar "{{jenkins_home}}/{{install_version}}"/jenkins.war --version
+  become: yes
+  register: jenkins_version
+  changed_when: false
+
+- name: Write Facts
+  template:
+    src: jenkins.fact.j2
+    dest: /etc/ansible/facts.d/jenkins.fact
+  become: yes
+#  when:
+#    - ansible_local.jenkins is undefined
+#    - ansible_local.java is defined
+#    - java_for_jenkins.[] in ansible_local.java.version

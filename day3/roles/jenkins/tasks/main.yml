@@ -1,55 +1,43 @@
-#- name: Create group for user
-#  group:
-#    name: "{{jenkins_user}}"
-#    gid: "{{jenkins_group_id}}"
-#  become: yes
-#- name: User create
-#  user:
-#    name: "{{jenkins_user}}"
-#    uid: "{{jenkins_user_id}}"
-#    group: "{{jenkins_user}}"
-#  become: yes
-- name: Create user
-  import_role:
-    name: user
-    tasks_from: create_user
+- name: Java install
+  include_role:
+    name: java
+  vars:
+    java_version:  "{{java_for_jenkins[install_version]}}"
+  when: ansible_local.java is undefined or ansible_local.java.version != java_for_jenkins[install_version]
 
-- name: Creating Directory
-  file:
-    path: "{{jenkins_home}}"
-    state: directory
-  become: yes
-- name: Download jenkins
-  get_url:
-    url: http://mirrors.jenkins.io/war-stable/{{install_version}}/jenkins.war
-    dest: '{{jenkins_home}}/jenkins.war'
-  become: yes
-- name: Coping templates
-  template:
-    src: jenkins.service.j2
-    dest: /etc/systemd/system/jenkins.service
-  become: yes
-  notify:
-    - "restart service"
-    - "check state"
-- name: Create facts directory
-  file:
-    path: /etc/ansible/facts.d/
-    state: directory
-  become: yes
+- block:
+  - name: Create user
+    include_role:
+      name: user
+      tasks_from: create_user
 
-- name: Java version
-  shell: java -version 2>&1 | grep version | awk -F\" '{print $2;}' | cut -d"_" -f1
-  become: yes
-  register: jenkins_java
+  - name: Creating Directory
+    file:
+      path: "{{jenkins_home}}/{{install_version}}"
+      state: directory
 
-- name: Jenkins version
-  shell: java -jar "{{jenkins_home}}"/jenkins.war --version
-  become: yes
-  register: jenkins_version
+  - name: Download jenkins
+    get_url:
+      url: http://mirrors.jenkins.io/war-stable/{{install_version}}/jenkins.war
+      dest: '{{jenkins_home}}/{{install_version}}/jenkins.war'
 
-- name: Write Facts
-  template:
-    src: jenkins.fact.j2
-    dest: /etc/ansible/facts.d/jenkins.fact
+  - name: Coping templates
+    template:
+      src: jenkins.service.j2
+      dest: /etc/systemd/system/jenkins.service
+    notify:
+      - "restart service"
+      - "check state"
+
+  - name: Jenkins version
+    shell: java -jar "{{jenkins_home}}/{{install_version}}"/jenkins.war --version
+    become: yes
+    register: jenkins_version
+    changed_when: false
+
+  - name: Write Facts
+    template:
+      src: jenkins.fact.j2
+      dest: /etc/ansible/facts.d/jenkins.fact
   become: yes
+  when: ansible_local.jenkins is undefined or ansible_local.jenkins.jenkins_version != install_version

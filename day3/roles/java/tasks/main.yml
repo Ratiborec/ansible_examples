@@ -1,21 +1,20 @@
-- name: Create Directory
-  file:
-    path: "{{java_folder}}/{{ java_version }}"
-    state: directory
-  become: yes
-#- block?
 - name: Do we have necessary java.tar.gz
   local_action: stat path={{java_archive}}/java-{{java_version}}.tar.gz
-  #local_action: command ls -la {{java_archive}}/java-{{java_version}}.tar.gz
   register: have_java
 
-#- block?
+
 - name: Message, tar.gz not found
   shell: echo "Archive was not found"
   failed_when: have_java.stat.exists == false
   changed_when: false
 
 - block:
+  - name: Create Directory
+    file:
+      path: "{{java_folder}}/{{ java_version }}"
+      state: directory
+    become: yes
+ 
   - name: Copy necessary java.tar.gz
     unarchive:
       src: java-{{java_version}}.tar.gz
