@@ -1,4 +1,9 @@
+- hosts: all
+  roles:
+    - common
+
 - hosts: jenkins_server 
   roles:
+    - user
     - java
- 
+    - jenkins 

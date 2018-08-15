@@ -3,6 +3,6 @@ Description=Jenkins Daemon
 [Service]
 ExecStart=/usr/bin/java {{JAVA_OPTS}} -jar {{jenkins_home}}/jenkins.war
 ExecStop=kill ps -ef | grep [j]enkins.war | awk '{ print $2 }'
-User={{jenkins_user}}
+User={{user}}
 [Install]
 WantedBy=multi-user.target

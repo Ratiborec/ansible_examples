@@ -1,3 +1,11 @@
+- name: Write facts
+  copy:
+    src: java.fact
+    dest: /etc/ansible/facts.d/
+    mode: "a+x"
+  become: yes
+  listen: "write_facts"
+
 - name: Collect Data
   setup:
     fact_path: /etc/ansible/facts.d/
@@ -9,11 +17,11 @@
   when:  java_version != ansible_local.java.version
   listen: "validate_java"
 
-- name: Write facts
-  copy:
-    src: java.fact
-    dest: /etc/ansible/facts.d/
-    mode: "a+x"
-  become: yes
-  listen: "write_facts"
+- name: Debug_1
+  debug: msg={{java_version}}
+  listen: "first_debug"
+
+- name: Debug_2
+  debug: msg={{ansible_local}}
+  listen: "second_debug"
 

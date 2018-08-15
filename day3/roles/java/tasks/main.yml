@@ -3,37 +3,36 @@
     path: "{{java_folder}}/{{ java_version }}"
     state: directory
   become: yes
-
+#- block?
 - name: Do we have necessary java.tar.gz
   local_action: stat path={{java_archive}}/java-{{java_version}}.tar.gz
+  #local_action: command ls -la {{java_archive}}/java-{{java_version}}.tar.gz
   register: have_java
 
+#- block?
 - name: Message, tar.gz not found
   shell: echo "Archive was not found"
   failed_when: have_java.stat.exists == false
   changed_when: false
- 
-- name: Copy necessary java.tar.gz
-  unarchive:
-    src: java-{{java_version}}.tar.gz
-    dest: "{{java_folder}}/{{java_version}}"
-  become: yes
-  when: ansible_local.java.version != java_version
 
-- name: Add version to alternatives
-  alternatives:
-    name: java
-    path: "{{java_folder}}/{{java_version}}/{{java_jdk_version[java_version].folder}}/bin/java"
-    link: "/usr/bin/java"
-  become: yes
-  when: ansible_local.java.version != java_version
-  notify:
-    - "collect_data"
-    - "validate_java"
-    - "write_facts"
-# Need to move this task
-- name: Create Directory
-  file:
-    path: /etc/ansible/facts.d/
-    state: directory
+- block:
+  - name: Copy necessary java.tar.gz
+    unarchive:
+      src: java-{{java_version}}.tar.gz
+      dest: "{{java_folder}}/{{java_version}}"
+
+  - name: Add version to alternatives
+    alternatives:
+      name: "{{item}}"
+      path: "{{java_folder}}/{{java_version}}/{{java_jdk_version[java_version].folder}}/bin/{{item}}"
+      link: "/usr/bin/{{item}}"
+    with_items:
+      - java
+      - jar
+      - javac
+    notify:
+      - "write_facts"
+      - "collect_data"
+      - "validate_java"
+  when:  ansible_local.java is undefined or ansible_local.java.version != java_version
   become: yes

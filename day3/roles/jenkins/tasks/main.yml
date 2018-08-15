@@ -1,14 +1,19 @@
-- name: Create group for user
-  group:
-    name: "{{jenkins_user}}"
-    gid: "{{jenkins_group_id}}"
-  become: yes
-- name: User create
-  user:
-    name: "{{jenkins_user}}"
-    uid: "{{jenkins_user_id}}"
-    group: "{{jenkins_user}}"
-  become: yes
+#- name: Create group for user
+#  group:
+#    name: "{{jenkins_user}}"
+#    gid: "{{jenkins_group_id}}"
+#  become: yes
+#- name: User create
+#  user:
+#    name: "{{jenkins_user}}"
+#    uid: "{{jenkins_user_id}}"
+#    group: "{{jenkins_user}}"
+#  become: yes
+- name: Create user
+  import_role:
+    name: user
+    tasks_from: create_user
+
 - name: Creating Directory
   file:
     path: "{{jenkins_home}}"

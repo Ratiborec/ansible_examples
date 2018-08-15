@@ -10,3 +10,8 @@
   notify: "clean packages"
   become: yes
 
+- name: Create Directory
+  file:
+    path: /etc/ansible/facts.d/
+    state: directory
+  become: yes

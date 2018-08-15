@@ -1,29 +1,12 @@
-- name: Create group
-  group:
-    name: "{{ group }}"
-    gid: "{{ gid }}"
-  become: yes
-
-#- name: Debug  
-#  debug: msg={{ home_dir }}
-
-- name: Create user
-  user:
-    name: "{{ user }}"
-    uid: "{{ uid }}"
-    group: "{{ group }}"
-    groups: "{{ groups_to_add | default(omit) }}"
-    create_home: "{{ create_home | bool }}"
-    home: "{{ home_dir | default(omit) }}"  
-  become: yes
+- name: Import Create user 
+  import_tasks: create_user.yml
 
 - name: Forward key
   authorized_key:
     user: "{{ user }}"
     key: "{{ lookup('file', '{{ key_path }}/id_rsa.pub') }}"
   become: yes
-  when: create_home == "yes" 
-
+  when: create_home == true
 
 - name: Add to sudoers
   template:
@@ -34,7 +17,7 @@
     group: root
     owner: root
   become: yes
-  when:  sudo == "yes" 
+  when:  sudo == true
 
 - name: Create facts dir
   file:
@@ -47,6 +30,3 @@
     src: user.j2
     dest: /etc/ansible/facts.d/user.fact
   become: yes
-
-
-
