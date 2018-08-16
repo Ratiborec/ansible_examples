@@ -9,11 +9,6 @@
  #       - gcc
  #       - python-devel
  #     become: yes
-
- #   - name: upgrade
- #     shell: pip install --upgrade pip
- #     become: yes
-   
    
  #   - name: install library
  #     pip:
@@ -22,7 +17,6 @@
  #       - requests
  #       - psutil
  #       - regex      
-       # - subprocess.check_output 
  #     become: yes
       
     - name: Try test

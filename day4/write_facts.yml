@@ -1,0 +1,16 @@
+- name: Create fact directory
+  file:
+    path: "{{facts_path}}"
+    state: directory
+  become: yes
+
+- debug: msg={{template[:3]}}
+  tag:
+    - never
+
+- name: Copy facts templates
+  template:
+    src: "{{template}}"
+    dest: "{{facts_path}}/{{template[:-3]}}"
+    mode: "{{ mode | default(omit) }}"
+  become: yes

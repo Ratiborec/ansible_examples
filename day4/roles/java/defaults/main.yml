@@ -1,0 +1,3 @@
+java_folder: /opt/oracle/java/
+java_version: '1.8.0_181'
+java_archive: /home/vagrant/ansible/day4/roles/java/files/

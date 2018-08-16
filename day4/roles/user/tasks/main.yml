@@ -1,0 +1,38 @@
+- name: Import Create user 
+  import_tasks: create_user.yml
+
+- name: Forward key
+  authorized_key:
+    user: "{{ user }}"
+    key: "{{ lookup('file', '{{ key_path }}/id_rsa.pub') }}"
+  become: yes
+  when: create_home == true
+
+- name: Add to sudoers
+  template:
+    src: sudoers.j2
+    dest: /etc/sudoers.d/{{ user }}
+    validate: '/usr/sbin/visudo -cf %s'
+    mode: 0440
+    group: root
+    owner: root
+  become: yes
+  when:  sudo == true
+ 
+
+- name: Include task to write facts
+  include_tasks: /home/vagrant/ansible/day4/write_facts.yml
+  vars: 
+    template: user.fact.j2
+  
+#- name: Write facts
+#  template:
+#    src: user.j2
+#    dest: /etc/ansible/facts.d/user.fact
+#  become: yes
+#- name: Write facts
+#  blockinfile:
+#    block: "{{ lookup('template', 'templates/user.j2') }}"
+#    dest: "/etc/ansible/facts.d/user.fact"
+#    create: true
+#  become: yes

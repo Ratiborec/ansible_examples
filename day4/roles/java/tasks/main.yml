@@ -1,0 +1,13 @@
+- name: Do we have necessary java.tar.gz
+  local_action: stat path={{java_archive}}/java-{{java_version}}.tar.gz
+  register: have_java
+
+
+- name: Message, tar.gz not found
+  shell: echo "Archive was not found"
+  failed_when: have_java.stat.exists == false
+  changed_when: false
+
+- name: Import Java install 
+  import_tasks: java_install.yml
+  when:  ansible_local.java is undefined or ansible_local.java.version != java_version

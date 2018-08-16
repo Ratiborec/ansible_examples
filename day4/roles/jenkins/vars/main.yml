@@ -1,0 +1,6 @@
+user: jenkins
+group: jenkins
+uid: 13000
+gid: 13000
+java_for_jenkins:
+  '2.121.2': '1.8.0_181'

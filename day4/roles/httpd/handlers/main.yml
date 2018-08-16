@@ -1,0 +1,15 @@
+- name: "Restart/Start Nginx"
+  systemd:
+    name: httpd
+    state: restarted
+    enabled: yes
+  become: yes 
+  listen: "restart httpd"
+ 
+
+- name: "Check HTTPD State"
+  wait_for:
+    port: "{{web_port}}"
+    host: "{{ansible_host}}"
+  become: yes
+  listen: "check state"

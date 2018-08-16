@@ -1,0 +1,33 @@
+- name: Create Directory
+  file:
+    path: "{{java_folder}}/{{ java_version }}"
+    state: directory
+  become: yes
+
+- name: Copy necessary java.tar.gz
+  unarchive:
+    src: java-{{java_version}}.tar.gz
+    dest: "{{java_folder}}/{{java_version}}"
+  become: yes
+
+- name: Add version to alternatives
+  alternatives:
+    name: "{{item}}"
+    path: "{{java_folder}}/{{java_version}}/{{java_jdk_version[java_version].folder}}/bin/{{item}}"
+    link: "/usr/bin/{{item}}"
+  with_items:
+    - java
+    - jar
+    - javac
+  notify:
+    - "collect_data"
+    - "validate_java"
+  become: yes
+
+- name: Include task to write facts
+  include_tasks: "{{write_facts_task}}"
+  vars:
+    template: java.fact.j2
+    mode: 'a+x'
+  
+

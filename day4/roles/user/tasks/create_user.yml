@@ -1,0 +1,16 @@
+- name: Create group
+  group:
+    name: "{{ group }}"
+    gid: "{{ gid | default(omit)}}"
+  become: yes
+
+- name: Create user
+  user:
+    name: "{{ user }}"
+    uid: "{{ uid }}"
+    group: "{{ group }}"
+    groups: "{{ groups_to_add | default(omit) }}"
+    create_home: "{{ create_home | bool | default(omit) }}"
+    home: "{{ home_dir | default(omit) }}"  
+  become: yes
+

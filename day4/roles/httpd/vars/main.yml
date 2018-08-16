@@ -1,0 +1,1 @@
+write_facts_task: /home/vagrant/ansible/day4/write_facts.yml

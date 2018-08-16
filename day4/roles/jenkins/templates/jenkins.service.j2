@@ -1,0 +1,8 @@
+[Unit]
+Description=Jenkins Daemon
+[Service]
+ExecStart=/usr/bin/java {{JAVA_OPTS}} -jar {{jenkins_home}}/{{install_version}}/jenkins.war
+ExecStop=kill ps -ef | grep [j]enkins.war | awk '{ print $2 }'
+User={{user}}
+[Install]
+WantedBy=multi-user.target

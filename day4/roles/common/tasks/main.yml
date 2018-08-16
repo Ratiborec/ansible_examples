@@ -1,0 +1,11 @@
+- name: System update
+  yum: name=* state=latest
+  notify: "clean packages"
+  become: yes
+
+- name: Install neсуssary tools
+  yum:
+    name: "{{ packages }}"
+    state: latest
+  notify: "clean packages"
+  become: yes

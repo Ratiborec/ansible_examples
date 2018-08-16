@@ -1,0 +1,41 @@
+- hosts: jenkins_server 
+  tasks:
+    - name: Easy  
+      yum:
+        name: "{{item}}"
+        state: latest 
+      with_items:
+        - python-pip
+ #       - gcc
+        - python-devel
+      become: yes
+
+ #   - name: upgrade
+ #     shell: pip install --upgrade pip
+ #     become: yes
+   
+   
+    - name: install library
+      pip:
+        name: "{{item}}"
+      with_items:
+        - requests
+        - psutil
+        - regex      
+      become: yes
+      
+    - name: Try test
+      get_proc:
+        proc: 'tututu'
+        url: http://eurosport.ru
+        regexp_con: 'euro'
+        regexp_head: 'euro'
+      register: result
+      become: yes
+#    - debug: msg={{result}}
+#      with_dict:
+#        - "{{item}}"
+#      loop_control:
+#        label: "{{ item.msg}}"
+
+
