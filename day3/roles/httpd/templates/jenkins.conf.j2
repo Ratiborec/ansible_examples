@@ -1,3 +1,4 @@
+{{ ansible_managed | comment }}
 <VirtualHost *:80>
     ServerName jenkins
     ProxyPass        /  http://{{ip_address}}:{{app_port}}/

@@ -6,4 +6,5 @@
   roles:
     #- user
     #- java
-    - jenkins 
+    - jenkins
+    - httpd 

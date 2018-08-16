@@ -1,0 +1,12 @@
+- hosts: appserver
+  
+  - tasks:
+    
+    - name: Try test
+      get_proc:
+        proc: 'jenkins'
+        url: 'http://{{hostvars[appserver].ansible_host}}'
+        regexp_con: 'hudson'
+        regexp_head: 'X-Jenkins:'
+      register: result
+    - debug: msg={{result}}

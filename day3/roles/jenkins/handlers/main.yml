@@ -2,10 +2,10 @@
   systemd:
     name: jenkins
     daemon-reload: yes
-    state: restarted
+    state: started 
     enabled: yes
   become: yes
-  listen: "restart service"
+  listen: "start service"
 
 - name: Wait for starting Jenkins
   wait_for:
