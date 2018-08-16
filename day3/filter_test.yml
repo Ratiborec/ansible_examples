@@ -1,0 +1,9 @@
+- hosts: localhost
+  vars:
+    users:
+      - { name: Identity, id: 818440412345 }
+      - { name: Devops, id: 794873312345 }
+      - { name: WCA, id: 544564512345 }
+      - { name: API, id: 3949364112345 }
+  tasks:
+    - debug: msg={{ users | detect("Identity") }}
