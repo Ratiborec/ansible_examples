@@ -1,5 +1,5 @@
 - name: Import Create user 
-  import_tasks: create_user.yml
+  include_tasks: create_user.yml
 
 - name: Forward key
   authorized_key:

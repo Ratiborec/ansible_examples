@@ -1,6 +1,6 @@
-- hosts: jenkins_server
+- hosts: httpd_server
   roles:
     - user
    # - java 
-    - jenkins
-    - httpd
+   # - jenkins
+   # - httpd
