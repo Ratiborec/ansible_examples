@@ -1,0 +1,22 @@
+- name: Check httpd
+  include_tasks: httpd.yml
+  tag:
+    - never
+    - sanity
+
+- name: Check java
+  include_tasks: java.yml
+#  vars:
+#    java_version: "{{java_version}}"
+  tag:
+    - never
+    - sanity
+
+- name: Check jenkins
+  include_tasks: jenkins.yml
+#  vars:
+#    port: "{{app_port}}"
+#    host: "{{ansible_host}}"
+  tag:
+    - never
+    - sanity 

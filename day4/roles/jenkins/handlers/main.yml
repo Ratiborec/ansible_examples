@@ -6,10 +6,3 @@
     enabled: yes
   become: yes
   listen: "start service"
-
-- name: Wait for starting Jenkins
-  wait_for:
-    port: "{{app_port}}"
-    host: "{{ansible_host}}"
-    delay: 5
-  listen: "check state"   

@@ -1,19 +1,1 @@
-#- name: Write facts
-#  copy:
-#    src: java.fact
-#    dest: /etc/ansible/facts.d/
-#    mode: "a+x"
-#  become: yes
-#  listen: "write_facts"
-
-- name: Collect Data
-  setup:
-    fact_path: /etc/ansible/facts.d/
-  listen: "collect_data"
- 
-- name: Verify Java Installation
-  fail:
-    msg: "Incorrect java installation"
-  when:  java_version != ansible_local.java.version
-  listen: "validate_java"
 

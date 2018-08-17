@@ -1,0 +1,7 @@
+- name: Wait for starting Jenkins
+  wait_for:
+    port: "{{app_port}}"
+    host: "{{ansible_host}}"
+    delay: 1
+  tag:
+    - jenkins 

@@ -19,9 +19,9 @@
     - java
     - jar
     - javac
-  notify:
-    - "collect_data"
-    - "validate_java"
+#  notify:
+#    - "collect_data"
+#    - "validate_java"
   become: yes
 
 - name: Include task to write facts

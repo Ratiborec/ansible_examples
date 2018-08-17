@@ -1,0 +1,12 @@
+- name: Collect Data
+  setup:
+    fact_path: "{{facts_path}}"
+  tag:
+    - java 
+
+- name: Verify Java Installation
+  fail:
+    msg: "Incorrect java installation"
+  when:  java_version != ansible_local.java.version
+  tag:
+    - java

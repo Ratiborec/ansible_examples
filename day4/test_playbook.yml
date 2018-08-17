@@ -1,6 +1,25 @@
-- hosts: httpd_server
+- hosts: webservers
+
   roles:
     - user
-   # - java 
-   # - jenkins
-   # - httpd
+    - httpd
+
+  tasks:
+    - include_role:
+        name: sanity
+        tasks_from: httpd
+
+- hosts: appservers  
+  
+  roles:
+    - java
+    - jenkins
+  tasks:
+    - include_role:
+        name: sanity
+        tasks_from: java
+
+    - include_role:
+        name: sanity
+        tasks_from: jenkins
+       

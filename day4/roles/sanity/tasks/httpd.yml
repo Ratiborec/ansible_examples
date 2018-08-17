@@ -1,0 +1,7 @@
+- name: "Check HTTPD State"
+  wait_for:
+    port: "{{web_port}}"
+    host: "{{ansible_host}}"
+  become: yes
+  tag:
+    - httpd  

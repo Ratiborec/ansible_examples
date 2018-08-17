@@ -27,7 +27,6 @@
       dest: /etc/systemd/system/jenkins.service
     notify:
       - "start service"
-#     - "check state"
 
   - name: Jenkins version
     shell: java -jar "{{jenkins_home}}/{{install_version}}"/jenkins.war --version
