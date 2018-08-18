@@ -8,18 +8,5 @@
     - include_role:
         name: sanity
         tasks_from: httpd
-
-- hosts: appservers  
-  
-  roles:
-    - java
-    - jenkins
-  tasks:
-    - include_role:
-        name: sanity
-        tasks_from: java
-
-    - include_role:
-        name: sanity
-        tasks_from: jenkins
-       
+- import_playbook: appserver_install.yml
+    

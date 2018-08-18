@@ -11,3 +11,6 @@
 - name: Import Java install 
   import_tasks: java_install.yml
   when:  ansible_local.java is undefined or ansible_local.java.version != java_version
+
+- name: Java verify
+  import_tasks: java_verify.yml

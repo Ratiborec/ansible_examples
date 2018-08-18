@@ -28,13 +28,16 @@
     notify:
       - "start service"
 
+  - name: Flash!!!
+    meta: flush_handlers
+
   - name: Jenkins version
     shell: java -jar "{{jenkins_home}}/{{install_version}}"/jenkins.war --version
     become: yes
     register: jenkins_version
  
   - name: Include task to write facts
-    include_tasks: "{{write_facts_task}}"
+    include_tasks: write_facts.yml
     vars:
       template: jenkins.fact.j2
  

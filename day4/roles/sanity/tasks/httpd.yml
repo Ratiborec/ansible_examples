@@ -1,7 +1,18 @@
-- name: "Check HTTPD State"
-  wait_for:
-    port: "{{web_port}}"
-    host: "{{ansible_host}}"
-  become: yes
-  tag:
-    - httpd  
+- block:
+  - name: "Check HTTPD State"
+    wait_for:
+      port: "{{web_port}}"
+      host: "{{ansible_host}}"
+      delay: 1
+    become: yes
+
+
+- rescue:
+  - name: Start service
+    systemd:
+      name: httpd
+      state: restarted
+      enabled: yes
+    become: yes
+  
+

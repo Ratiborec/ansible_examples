@@ -19,9 +19,6 @@
     - java
     - jar
     - javac
-#  notify:
-#    - "collect_data"
-#    - "validate_java"
   become: yes
 
 - name: Include task to write facts
@@ -30,4 +27,3 @@
     template: java.fact.j2
     mode: 'a+x'
   
-

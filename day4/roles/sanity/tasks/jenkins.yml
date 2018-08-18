@@ -1,7 +1,14 @@
-- name: Wait for starting Jenkins
-  wait_for:
-    port: "{{app_port}}"
-    host: "{{ansible_host}}"
-    delay: 1
-  tag:
-    - jenkins 
+- block:
+  - name: Wait for starting Jenkins
+    wait_for:
+      port: "{{app_port}}"
+      host: "{{ansible_host}}"
+      delay: 1
+- rescue:
+  - name: Start service
+    systemd:
+      name: jenkins
+      state: restarted
+      enabled: yes
+    become: yes
+

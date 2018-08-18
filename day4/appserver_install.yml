@@ -1,0 +1,8 @@
+- hosts: appservers
+
+  roles:
+    - jenkins
+  tasks:
+    - include_role:
+        name: sanity
+        tasks_from: jenkins
