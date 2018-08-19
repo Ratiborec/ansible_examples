@@ -21,18 +21,7 @@
  
 
 - name: Include task to write facts
-  include_tasks: /home/vagrant/ansible/day4/write_facts.yml
+  include_tasks: "{{write_facts_task}}"
   vars: 
     template: user.fact.j2
-  
-#- name: Write facts
-#  template:
-#    src: user.j2
-#    dest: /etc/ansible/facts.d/user.fact
-#  become: yes
-#- name: Write facts
-#  blockinfile:
-#    block: "{{ lookup('template', 'templates/user.j2') }}"
-#    dest: "/etc/ansible/facts.d/user.fact"
-#    create: true
-#  become: yes
+

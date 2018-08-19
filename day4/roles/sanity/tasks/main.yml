@@ -1,22 +1,24 @@
-- name: Check httpd
-  include_tasks: httpd.yml
-  tag:
-    - never
-    - sanity
+- block:
+  - name: "Check Service State"
+    wait_for:
+      port: "{{service_port}}"
+      host: "{{ansible_host}}"
+      timeout: "{{timeout_check}}"
+      state: started
+    become: yes
 
-- name: Check java
-  include_tasks: java.yml
-#  vars:
-#    java_version: "{{java_version}}"
-  tag:
-    - never
-    - sanity
 
-- name: Check jenkins
-  include_tasks: jenkins.yml
-#  vars:
-#    port: "{{app_port}}"
-#    host: "{{ansible_host}}"
-  tag:
-    - never
-    - sanity 
+  rescue:
+  - name: Start service
+    systemd:
+      name: "{{service}}"
+      state: restarted
+      enabled: yes
+    become: yes
+  
+  always:
+  - name: Show state
+    command: systemctl status {{service}}
+    changed_when: false
+    become: yes
+  tags: sanity

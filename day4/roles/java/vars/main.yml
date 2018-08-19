@@ -5,5 +5,3 @@ java_jdk_version:
   '10.0.2':
     url: http://download.oracle.com/otn-pub/java/jdk/10.0.2+13/19aef61b38124481863b1413dce1855f/jdk-10.0.2_linux-x64_bin.tar.gz
     folder: jdk-10.0.2
-
-#write_facts_task: /home/vagrant/ansible/day4/write_facts.yml

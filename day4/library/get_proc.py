@@ -1,11 +1,25 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
+from __future__ import absolute_import, division, print_function
+__metaclass__ = type
 from ansible.module_utils.basic import *
 from subprocess import *
 import requests
 import re
 import psutil
+
+DOCUMENTATION = r''' 
+---
+module: get_proc 
+version_added: "0.0.1" 
+short_description: my first ansible module 
+description: 
+  - module for getting pid,listning port and regex matchin in headers and content for process
+author: 
+  - "Mikhail Znak" 
+''' 
+
 
 def collect_data_proc(proc):
     data = []

@@ -3,10 +3,9 @@
   roles:
     - user
     - httpd
-
-  tasks:
-    - include_role:
-        name: sanity
-        tasks_from: httpd
+  tags:
+    - httpd
+ 
 - import_playbook: appserver_install.yml
-    
+  tags: 
+    - jenkins    

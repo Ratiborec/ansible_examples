@@ -3,6 +3,7 @@
     name: httpd
     state: latest
   become: yes
+
 - name: Add virtual host
   template: 
     src: jenkins.conf.j2
@@ -10,12 +11,10 @@
   become: yes
   notify: "restart httpd"  
 
-- name: FLUSH HANDLERS
-  meta: flush_handlers
-
 - name: Collect facts
   shell: httpd -v | grep version | awk -F\/ '{print $2;}' | cut -d " " -f1
   register: httpd_version
+  changed_when: False
   become: true
 
 - name: Include task to write facts
@@ -24,3 +23,10 @@
     template: httpd.fact.j2
     mode: 'a+x'
 
+- name: Sanity checks
+  include_role:
+    name: sanity
+  tags:
+    - never
+    - httpd
+    - sanity

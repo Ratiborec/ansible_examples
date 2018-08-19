@@ -6,15 +6,8 @@
         state: latest 
       with_items:
         - python-pip
- #       - gcc
         - python-devel
       become: yes
-
- #   - name: upgrade
- #     shell: pip install --upgrade pip
- #     become: yes
-   
-   
     - name: install library
       pip:
         name: "{{item}}"
@@ -31,11 +24,5 @@
         regexp_con: 'euro'
         regexp_head: 'euro'
       register: result
-      become: yes
-#    - debug: msg={{result}}
-#      with_dict:
-#        - "{{item}}"
-#      loop_control:
-#        label: "{{ item.msg}}"
-
-
+      become: yes   
+  
