@@ -1,0 +1,5 @@
+common_package:
+  - yum-utils
+  - jq
+  - net-tools
+  - ntp
